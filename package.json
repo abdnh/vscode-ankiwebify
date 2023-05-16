@@ -2,7 +2,7 @@
   "name": "ankiwebify",
   "displayName": "AnkiWebify",
   "description": "Convert Markdown to the HTML supported by AnkiWeb",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/abdnh/vscode-ankiwebify.git"
@@ -21,9 +21,15 @@
     "vscode": "^1.78.0"
   },
   "categories": [
-    "Programming Languages", "Other"
+    "Programming Languages",
+    "Other"
   ],
-  "keywords": ["anki", "ankiweb", "markdown", "html"],
+  "keywords": [
+    "anki",
+    "ankiweb",
+    "markdown",
+    "html"
+  ],
   "icon": "images/logo.png",
   "activationEvents": [],
   "main": "./dist/extension.js",

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import ankiwebify from "./ankiwebify";
+const path = require("node:path");
 
 function getSelectedText() {
     const editor = vscode.window.activeTextEditor;
@@ -18,6 +19,7 @@ function getDocumentText() {
     if (!editor) {
         return;
     }
+
     return editor.document.getText();
 }
 
@@ -66,8 +68,10 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
             getGithubContext().then((githubContext) => {
+                const editor = vscode.window.activeTextEditor;
                 const converted = ankiwebify(
                     text,
+                    path.dirname(editor!!.document.fileName),
                     githubContext.repo,
                     githubContext.branch
                 );

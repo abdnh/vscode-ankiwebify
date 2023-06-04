@@ -76,8 +76,9 @@ export function activate(context: vscode.ExtensionContext) {
                     githubContext.branch
                 );
                 vscode.env.clipboard.writeText(converted);
-                vscode.window.showInformationMessage(
-                    "Copied AnkiWeb HTML to clipboard"
+                vscode.window.setStatusBarMessage(
+                    "Copied AnkiWeb HTML to clipboard",
+                    2000
                 );
             });
         }

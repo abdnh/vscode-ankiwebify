@@ -28,13 +28,22 @@ interface GithubContext {
     readonly branch?: string;
 }
 
-async function getGithubContext(): Promise<GithubContext> {
+async function getGithubContext(
+    rootUri: vscode.Uri | undefined
+): Promise<GithubContext> {
     let repo;
     let branch;
     const gitExtension = vscode.extensions.getExtension("vscode.git")!!.exports;
     const gitApi = gitExtension.getAPI(1);
-    if (gitApi.repositories[0]) {
-        const url = gitApi.repositories[0].state.remotes[0]?.fetchUrl;
+    let repository;
+    for (const repo of gitApi.repositories) {
+        if (repo.rootUri.fsPath === rootUri?.fsPath) {
+            repository = repo;
+        }
+    }
+
+    if (repository) {
+        const url = repository.state.remotes[0]?.fetchUrl;
         if (url) {
             const match =
                 /https:\/\/.*?\/(?<repo>(?<username>.*?)\/(?<project>.*?))((\.git)$|\/|$)/.exec(
@@ -42,7 +51,7 @@ async function getGithubContext(): Promise<GithubContext> {
                 );
             repo = match?.groups?.repo;
         }
-        branch = gitApi.repositories[0].state.HEAD?.name;
+        branch = repository.state.HEAD?.name;
     }
     if (typeof repo === "undefined") {
         repo = await vscode.window.showInputBox({ prompt: "GitHub repo" });
@@ -67,7 +76,11 @@ export function activate(context: vscode.ExtensionContext) {
             if (!text) {
                 return;
             }
-            getGithubContext().then((githubContext) => {
+            getGithubContext(
+                vscode.workspace.workspaceFolders
+                    ? vscode.workspace.workspaceFolders[0].uri
+                    : undefined
+            ).then((githubContext) => {
                 const editor = vscode.window.activeTextEditor;
                 const converted = ankiwebify(
                     text,

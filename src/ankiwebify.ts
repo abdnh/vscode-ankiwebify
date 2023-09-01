@@ -29,7 +29,7 @@ export default function ankiwebify(
     const doc = new JSDOM(parsedHtml).window.document;
     doc.querySelectorAll("p").forEach((tag) => {
         tag.childNodes.forEach((child) => {
-            if (child.nodeType === 3) {
+            if (child.nodeType === Node.TEXT_NODE) {
                 child.textContent = (child.textContent ?? "").replace(
                     "\n",
                     " "
@@ -43,7 +43,7 @@ export default function ankiwebify(
 
     doc.querySelectorAll("ul, ol").forEach((tag) => {
         tag.childNodes.forEach((child) => {
-            if (child.nodeType === 3) {
+            if (child.nodeType === Node.TEXT_NODE) {
                 child.textContent = (child.textContent ?? "").replace("\n", "");
             }
         });

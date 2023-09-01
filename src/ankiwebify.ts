@@ -2,7 +2,7 @@ import { marked } from "marked";
 import { JSDOM } from "jsdom";
 const path = require("node:path");
 
-const allowedTags = ["img", "a", "b", "i", "code", "ul", "ol", "li", "div"];
+const allowedTags = ["img", "a", "b", "i", "code", "ul", "ol", "li", "div", "p", "br"];
 
 function isRelativeLink(url: string): boolean {
     return !(
@@ -27,33 +27,13 @@ export default function ankiwebify(
 ) {
     const parsedHtml = marked(markdown, { mangle: false, headerIds: false });
     const doc = new JSDOM(parsedHtml).window.document;
-    doc.querySelectorAll("p").forEach((tag) => {
-        tag.childNodes.forEach((child) => {
-            if (child.nodeType === Node.TEXT_NODE) {
-                child.textContent = (child.textContent ?? "").replace(
-                    "\n",
-                    " "
-                );
-            }
-            if (child.nodeName === "BR") {
-                child.replaceWith("\n");
-            }
-        });
-    });
-
-    doc.querySelectorAll("ul, ol").forEach((tag) => {
-        tag.childNodes.forEach((child) => {
-            if (child.nodeType === Node.TEXT_NODE) {
-                child.textContent = (child.textContent ?? "").replace("\n", "");
-            }
-        });
-    });
 
     doc.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((tag) => {
         const b = doc.createElement("b");
         b.innerHTML = tag.innerHTML;
         tag.replaceWith(b);
         b.insertAdjacentText("beforebegin", "\n");
+        b.insertAdjacentText("afterend", "\n");
     });
 
     doc.querySelectorAll("em").forEach((tag) => {

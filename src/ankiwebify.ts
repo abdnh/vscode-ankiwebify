@@ -25,7 +25,7 @@ export default function ankiwebify(
     githubRepo?: string,
     branch: string = "master"
 ) {
-    const parsedHtml = marked(markdown, { mangle: false, headerIds: false });
+    const parsedHtml = marked(markdown, { mangle: false, headerIds: false, gfm: true });
     const doc = new JSDOM(parsedHtml).window.document;
 
     doc.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((tag) => {
